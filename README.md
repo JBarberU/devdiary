@@ -28,7 +28,7 @@ The default storage location is `~/.devdiary/diaries`, which might be good to ke
 The easiest usage is to create an alias like this:
 ```bash
 # Add to your {bash,zsh,whatever}rc:
-alias devd="vim $(devdiary.py --add --latest)"
+alias devd="vim \$(devdiary.py --add --latest)"
 ```
 
 This will create a new diary entry if needed, and open it in vim (replace with your favorite editor)
