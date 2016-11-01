@@ -14,6 +14,32 @@ DEVDIARY_VERSION = 'DevDiary v0.1'
 class PathExists(Exception):
     pass
 
+class TF:
+
+    RESET        = '\x1b[m'
+    BOLD         = '\x1b[1m'
+    RED          = '\x1b[31m'
+    GREEN        = '\x1b[32m'
+    YELLOW       = '\x1b[33m'
+    BLUE         = '\x1b[34m'
+    MAGENTA      = '\x1b[35m'
+    CYAN         = '\x1b[36m'
+    BOLD_RED     = '\x1b[1;31m'
+    BOLD_GREEN   = '\x1b[1;32m'
+    BOLD_YELLOW  = '\x1b[1;33m'
+    BOLD_BLUE    = '\x1b[1;34m'
+    BOLD_MAGENTA = '\x1b[1;35m'
+    BOLD_CYAN    = '\x1b[1;36m'
+    BG_RED       = '\x1b[41m'
+    BG_GREEN     = '\x1b[42m'
+    BG_YELLOW    = '\x1b[43m'
+    BG_BLUE      = '\x1b[44m'
+    BG_MAGENTA   = '\x1b[45m'
+    BG_CYAN      = '\x1b[46m'
+
+    @classmethod
+    def str(cls, color, msg):
+        return color + msg + TF.RESET
 
 class DevDiary:
 
@@ -90,7 +116,7 @@ class DevDiary:
         """Prints a summary of all diary entries.
         args: a list of years to consider for the summary, default is all years
         """
-        summary = ['# Summary\n\n']
+        summary = [TF.str(TF.BOLD_BLUE, '# Summary\n\n')]
 
         # Folders to exclude (in case the diaries are under version control)
         exclude = ['.git']
@@ -108,15 +134,15 @@ class DevDiary:
                 continue
 
             with calendar.TimeEncoding('en_US.UTF-8') as encoding:
-                summary.append('## {0}\n\n'.format(y))
+                summary.append(TF.str(TF.BOLD_GREEN, '## {0}\n\n'.format(y)))
                 for m in os.listdir('{0}/{1}'.format(self.diary_path, y)):
-                    summary.append('### {0}\n\n'.format(calendar.month_name[int(m)]))
+                    summary.append(TF.str(TF.BOLD_MAGENTA, '### {0}\n\n'.format(calendar.month_name[int(m)])))
                     for d in os.listdir('{0}/{1}/{2}'.format(self.diary_path, y, m)):
                         with open('{0}/{1}/{2}/{3}'.format(self.diary_path, y, m, d), 'r') as f:
                             lines = f.readlines()
-                            date_str = d.replace('.md', '')
+                            date_str = str(int(d.replace('.md', ''))) # Trick to remove leading zeros
                             date_str = '{0}{1}'.format(date_str, ordinal_suffix(int(date_str)))
-                            summary.append('#### {0}\n\n'.format(date_str))
+                            summary.append(TF.str(TF.BOLD_YELLOW, '#### {0}\n\n'.format(date_str)))
 
                             # We assume the default template, which means actual text starts at line 7
                             summary += lines[7:]
